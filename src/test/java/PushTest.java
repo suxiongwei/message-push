@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.connection.RedisZSetCommands;
 import org.springframework.data.redis.core.DefaultTypedTuple;
@@ -26,50 +27,64 @@ public class PushTest {
     @Autowired private MessagePushService messagePushService;
     @Autowired private RedisTemplate redisTemplate;
 
+    /**
+     * 队列数量
+     */
+    @Value("${subscribe-queue-size}")
+    private Integer SUBSCRIBE_QUEUE_SIZE;
+
+    /**
+     * 一次从 队列中取出执行的数量
+     */
+    @Value("${subscribe-queue-pool-size}")
+    private Integer SUBSCRIBE_QUEUE_POOL_SIZE;
+
     @Test
     public void testPush(){
-        // 模拟 在 2019-08-11 17:44:52 --> 1565516692 时间有5000个用户订阅
+        // 模拟 在 2019-08-11 17:44:52 --> 1565516692 时间有 userCount 个用户订阅
         double subscribeTime = 1565516692;
-        int userCount = 5000;
-        // 一次从 队列中取出执行的数量
-        int batchCount = 2000;
-        Set<ZSetOperations.TypedTuple> sets = new HashSet<>(userCount);
+        int userCount = 50;
+
         // 循环模拟用户id
-        for (int i = 1; i <= userCount; i++) {
-            ZSetOperations.TypedTuple typedTuple = new DefaultTypedTuple(i, subscribeTime);
-            sets.add(typedTuple);
+        for (int userId = 1; userId <= userCount; userId++) {
+            int num = userId % SUBSCRIBE_QUEUE_SIZE;
+            // 在一个redis中放多个队列，在实际运行中可配置多个redis，分别放对应的队列
+            redisTemplate.opsForZSet().add(RedisKeyConstants.SUBSCRIBE_QUEUE_KEY + num,userId,subscribeTime);
         }
         Set set = null;
-        // 将元素插入有序集合zset
-        redisTemplate.opsForZSet().add("zset", sets);
 
+        // 已经为空的队列数量
+        int emptyQueue = 0;
         // 已经推送的数量
         int pushCount = 0;
-        for (int j = 1; j <= 6; j++){
-            logger.info("-------------push batch：{}-------------",j);
-            /**
-             * 获取之后 执行删除 避免下一秒的定时任务取到已经消费掉的数据（能否实现？）
-             *
-             * 不能实现的话：可以定义一个redis 分布式锁
-             */
-            set = redisTemplate.opsForZSet().reverseRangeByScore("zset",subscribeTime,subscribeTime,0,batchCount);
-            redisTemplate.opsForZSet().remove("zset",set.toArray());
-            if (0 == set.size()){
-                logger.info("------sort is empty------");
+        // 模拟每秒的定时任务
+        for (;;){
+            logger.info("-------------push batch：{}-------------",System.currentTimeMillis());
+            if (SUBSCRIBE_QUEUE_SIZE <= emptyQueue){
                 break;
             }
-            set.forEach(push -> messagePushService.pushMsg(push));
-            pushCount = pushCount + set.size();
+
+            String queueKey = getSubscribeQueue();
+            logger.info("------拉取的队列：{}------",queueKey);
+            set = redisTemplate.opsForZSet().reverseRangeByScore(queueKey,subscribeTime,subscribeTime,0,SUBSCRIBE_QUEUE_POOL_SIZE);
+            if (0 == set.size()){
+                logger.info("------{} is empty------",queueKey);
+                emptyQueue ++;
+            }else {
+                redisTemplate.opsForZSet().remove(queueKey,set.toArray());
+
+                // 具体的推送逻辑
+                set.forEach(push -> messagePushService.pushMsg(push));
+                pushCount = pushCount + set.size();
+                // 睡眠一秒 模拟每秒的定时任务
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         logger.info("push end:{}",pushCount);
-    }
-
-    @Test
-    public void clearRedis(){
-        Set<String> keys = redisService.keys(RedisKeyConstants.EXERCISE_PUSH_KEY +"*");
-        for(String ss:keys){
-            System.out.println(ss);
-        }
     }
 
     @Test
@@ -165,6 +180,7 @@ public class PushTest {
                     + val.getScore() + "}\n");
         }
     }
+
     /**
      * 打印普通集合
      * @param set 普通集合
@@ -179,5 +195,13 @@ public class PushTest {
             System. out.print (val +"\t");
         }
         System.out.println();
+    }
+
+    /**
+     * 获取需要拉取执行的队列
+     * @return
+     */
+    private String getSubscribeQueue(){
+        return RedisKeyConstants.SUBSCRIBE_QUEUE_KEY + (redisTemplate.opsForValue().increment(RedisKeyConstants.SUBSCRIBE_QUEUE_INCR_KEY) % SUBSCRIBE_QUEUE_SIZE);
     }
 }

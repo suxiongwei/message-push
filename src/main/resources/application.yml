@@ -9,11 +9,11 @@ server:
       directory: access
     max-threads: 200
     min-spare-threads: 10
-  port: 9053
+  port: 8080
   connection-timeout: 5s
 spring:
   profiles:
-    active: product
+    active: dev
   aop:
     proxy-target-class: true
   quartz:

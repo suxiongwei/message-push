@@ -10,3 +10,6 @@ spring:
     session:
       #session存储类型
       store-type: redis
+
+subscribe-queue-size : 10
+subscribe-queue-pool-size : 2000

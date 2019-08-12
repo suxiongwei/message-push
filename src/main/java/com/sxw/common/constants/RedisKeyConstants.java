@@ -2,8 +2,10 @@ package com.sxw.common.constants;
 
 public class RedisKeyConstants {
     /**
-     * 推送
+     * 用来计算消费队列的自增key
      */
-    public static final String EXERCISE_PUSH_KEY = "ep_";
+    public static final String SUBSCRIBE_QUEUE_INCR_KEY = "sqik";
+
+    public static final String SUBSCRIBE_QUEUE_KEY = "sqk_";
 
 }
