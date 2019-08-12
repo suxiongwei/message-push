@@ -1,0 +1,60 @@
+server:
+  tomcat:
+    basedir: logs
+    uri-encoding: UTF-8
+    session-timeout: 30
+    accesslog:
+      pattern: '%h %l %u %t %{xrealip}i %r %s %b'
+      enabled: true
+      directory: access
+    max-threads: 200
+    min-spare-threads: 10
+  port: 9053
+  connection-timeout: 5s
+spring:
+  profiles:
+    active: product
+  aop:
+    proxy-target-class: true
+  quartz:
+    #相关属性配置
+    properties:
+      org:
+        quartz:
+          scheduler:
+            instanceName: clusteredScheduler
+            instanceId: AUTO
+          threadPool:
+            class: org.quartz.simpl.SimpleThreadPool
+            threadCount: 10
+            threadPriority: 5
+            threadsInheritContextClassLoaderOfInitializingThread: false
+  kafka:
+    # 指定kafka 代理地址，可以多个
+    bootstrap-servers: 127.0.0.1:9092
+    producer:
+      retries: 0
+      # 每次批量发送消息的数量
+      batch-size: 16384
+      # 缓存容量
+      buffer-memory: 33554432
+      # 指定消息key和消息体的编解码方式
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      # 指定默认消费者group id
+      group-id: consumer-tutorial
+      auto-commit-interval: 100
+      auto-offset-reset: earliest
+      enable-auto-commit: true
+      # 指定消息key和消息体的编解码方式
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    # 指定listener 容器中的线程数，用于提高并发量
+    listener:
+      concurrency: 3
+
+#查询缓存获取推送的触发时间
+push-timer-cron : '* * * * * ?'
+#失败任务重试的定时任务,每分钟执行一次
+retry-push-time-cron : '0 0/1 * * * ?'
