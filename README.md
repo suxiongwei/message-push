@@ -7,4 +7,5 @@
 ### 运行步骤
 1. 开启 redis服务、zookeeper服务、kafka服务
 2. 运行测试类 [testPush](https://github.com/suxiongwei/message-push/blob/master/src/test/java/PushTest.java)
+，查看日志输出观察推送效果。
 
