@@ -2,6 +2,7 @@ import com.sxw.MessagePushApp;
 import com.sxw.common.constants.RedisKeyConstants;
 import com.sxw.common.redis.RedisService;
 import com.sxw.service.MessagePushService;
+import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -49,7 +50,8 @@ public class PushTest {
         for (int userId = 1; userId <= userCount; userId++) {
             int num = userId % SUBSCRIBE_QUEUE_SIZE;
             // 在一个redis中放多个队列，在实际运行中可配置多个redis，分别放对应的队列
-            redisTemplate.opsForZSet().add(RedisKeyConstants.SUBSCRIBE_QUEUE_KEY + num,userId,subscribeTime);
+            String subscribeKey = String.format("%s%s",RedisKeyConstants.SUBSCRIBE_QUEUE_KEY,num);
+            redisTemplate.opsForZSet().add(subscribeKey,userId,subscribeTime);
         }
         Set set = null;
 
