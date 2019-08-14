@@ -46,7 +46,7 @@ public class PushTest {
         double subscribeTime = 1565516692;
         int userCount = 50;
 
-        // 循环模拟用户id
+//        // 循环模拟用户id
         for (int userId = 1; userId <= userCount; userId++) {
             int num = userId % SUBSCRIBE_QUEUE_SIZE;
             // 在一个redis中放多个队列，在实际运行中可配置多个redis，分别放对应的队列
@@ -89,6 +89,9 @@ public class PushTest {
         logger.info("push end:{}",pushCount);
     }
 
+    /**
+     * 测试 sortSet的常用方法
+     */
     @Test
     public void testSortSet(){
         // Spring提供接口 TypedTuple操作有序集合

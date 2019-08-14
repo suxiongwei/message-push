@@ -1,17 +1,15 @@
 spring:
   redis:
-    host: localhost
-    port: 6379
-    password:
-    jedis:
+    cluster:
+      nodes: 127.0.0.1:6001,127.0.0.1:6002,127.0.0.1:6003,127.0.0.1:6004,127.0.0.1:6005,127.0.0.1:6006
+      max-redirects: 3 # 获取失败 最大重定向次数
+    timeout: 6000ms
+    lettuce:
       pool:
-        max-idle: 3
-        max-active: 10
-    session:
-      #session存储类型
-      store-type: redis
+        max-active: 1000
+        max-idle: 10
+        min-idle: 5
+        max-wait: -1
 
-
-
-subscribe-queue-size : 10
+subscribe-queue-size : 3
 subscribe-queue-pool-size : 2000
