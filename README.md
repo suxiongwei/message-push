@@ -10,7 +10,7 @@
 - quartz版本：2.3.0
 - spring-boot版本：2.1.1.RELEASE
 - redis 版本：redis-5.0.2
-- redis 集群（6个node，3个master，3个slave）
+- redis 集群（6个node —> 3个master + 3个slave）
 - 开发工具：idea
 
 ### 运行步骤
