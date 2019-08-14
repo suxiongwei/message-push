@@ -2,7 +2,9 @@
 
 > 在公司开发的一个项目中有推送的业务场景，也是我负责设计开发，在实际的使用中还没有遇到业务量大的场景，也就一直没有优化。
 > 存在的问题就是当遇到业务高峰时不容易实现服务器的扩容，基于quartz的分布式定时任务复杂性也较高。
-> 因此在看了[想不到吧？我是这样用Redis实现消息定时推送的！](www.cnblogs.com/linlinismine/p/9214299.html)这篇文章之后，决定自己再把推送系统重新设计。基本上实现了文章中的推送流程。
+> 因此在看了[想不到吧？我是这样用Redis实现消息定时推送的！](www.cnblogs.com/linlinismine/p/9214299.html)这篇文章之后，决定自己再把推送系统重新设计。
+>
+> 基本上实现了文章中的推送流程。
 
 ### 运行环境
 
@@ -15,7 +17,7 @@
 
 ### 运行步骤
 
-1. 启动redis集群（我测试时启动了6个node，3个master，3个slave，因此将队列数在配置文件中配置为了3个队列）
+1. 启动redis集群
 2. 启动zookeeper服务、kafka服务
 3. 运行测试类 [testPush](https://github.com/suxiongwei/message-push/blob/master/src/test/java/PushTest.java)，查看日志输出观察推送效果。
 
@@ -26,7 +28,7 @@
 2. 推送结果发送到消息队列后数据的持久化。
 
 
-## redis 集群的搭建
+### redis 集群的搭建
 参考文章:
 -  [深入剖析Redis - Redis集群模式搭建与原理详解](https://www.jianshu.com/p/84dbb25cc8dc)
 -  [redis常用集群方案](https://www.jianshu.com/p/1ecbd1a88924)
@@ -34,7 +36,7 @@
 
 以下是本人在搭建redis集群过程中的一些笔记
 
-### 启动redis命令
+#### 启动redis命令
 
 分别执行```sudo redis-server /usr/local/redis-cluster/6001/redis.conf```从6001 ~ 6006
 
@@ -50,7 +52,7 @@ suxiongwei@Mac  ~/program/redis-5.0.2/src  ps -ef | grep redis
     0 89554     1   0  2:09下午 ??         0:00.06 redis-server 127.0.0.1:6006 [cluster]
 ```
 
-### 组建集群
+#### 组建集群
 
 ```sheel
  suxiongwei@Mac  ~/program/redis-5.0.2/src  ./redis-trib.rb create --replicas 1 127.0.0.1:6001 127.0.0.1:6002 127.0.0.1:6003 127.0.0.1:6004 127.0.0.1:6005 127.0.0.1:6006
@@ -124,14 +126,14 @@ S: b612f3ce3bba3b781e3758fbbd10c57f1ff076f1 127.0.0.1:6004
 [OK] All 16384 slots covered.
 ```
 
-### 集群组建完毕我们用客户端连接任意一个节点
+#### 集群组建完毕我们用客户端连接任意一个节点
 
 ```sheel
 suxiongwei@Mac  ~/program/redis-5.0.2/src  redis-cli -c -h 127.0.0.1 -p 6001
 127.0.0.1:6001>
 ```
 
-### 查看集群状态
+#### 查看集群状态
 
 输入命令"cluster info" 或者"cluster nodes "查看集群状态。可以看到集群已经搭建完毕。
 
@@ -163,13 +165,13 @@ b612f3ce3bba3b781e3758fbbd10c57f1ff076f1 127.0.0.1:6004@16004 slave 2ae0c8314bbc
 68243e0d2058e28b4dee4b1070af31b3fdaf2c87 127.0.0.1:6001@16001 myself,master - 0 1565763493000 1 connected 0-5460
 ```
 
-### 进入redis
+#### 进入redis
 
 ```
 redis-cli -c -h 127.0.0.1 -p 6001
 ```
 
-### 模拟放十个key sqk_0 ~ sqk_9 观察值在集群中的分布情况
+#### 模拟放十个key sqk_0 ~ sqk_9 观察值在集群中的分布情况
 
 ```
 suxiongwei@Mac  ~/program/redis-5.0.2/src  redis-cli -c -h 127.0.0.1 -p 6001
