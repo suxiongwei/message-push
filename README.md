@@ -29,10 +29,13 @@
 
 
 ### redis 集群的搭建
-参考文章:
--  [深入剖析Redis - Redis集群模式搭建与原理详解](https://www.jianshu.com/p/84dbb25cc8dc)
--  [redis常用集群方案](https://www.jianshu.com/p/1ecbd1a88924)
+参考资源:
+
+- [Redis集群官方教程](https://redis.io/topics/cluster-tutorial)
+- [深入剖析Redis - Redis集群模式搭建与原理详解](https://www.jianshu.com/p/84dbb25cc8dc)
+- [Redis常用集群方案](https://www.jianshu.com/p/1ecbd1a88924)
 - [Redis集群搭建详细教程](https://jingyan.baidu.com/album/bea41d43aa8fe6b4c51be6b0.html?picindex=1)
+- [Linux下搭建Redis5.0版集群](https://blog.csdn.net/qq_39135287/article/details/84189397)
 
 以下是本人在搭建redis集群过程中的一些笔记
 
