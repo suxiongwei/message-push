@@ -1,10 +1,12 @@
 ## 基于redis实现的消息推送服务 
 
-> 在公司开发的一个项目中有推送的业务场景，也是我负责设计开发，在实际的使用中还没有遇到业务量大的场景，也就一直没有优化。
-> 存在的问题就是当遇到业务高峰时不容易实现服务器的扩容，基于quartz的分布式定时任务复杂性也较高。
-> 因此在看了[想不到吧？我是这样用Redis实现消息定时推送的！](https://www.cnblogs.com/linlinismine/p/9214299.html)这篇文章之后，决定自己再把推送系统重新设计。
->
-> 基本上实现了文章中的推送流程。
+### 项目背景
+
+在公司开发的一个项目中有推送的业务场景，也是我负责设计开发，在实际的使用中还没有遇到业务量大的场景，也就一直没有优化。
+存在的问题就是当遇到业务高峰时不容易实现服务器的扩容，基于quartz的分布式定时任务复杂性也较高。
+因此在看了[想不到吧？我是这样用Redis实现消息定时推送的！](https://www.cnblogs.com/linlinismine/p/9214299.html)这篇文章之后，决定自己再把推送系统重新设计。
+
+基本上实现了文章中的推送流程。
 
 ### 运行环境
 
@@ -24,8 +26,11 @@
 ### 待开发
 1. 队列数量的动态配置
   文中作者使用了淘宝的diamond进行队列数的动态配置，本项目是基于springboot实现，因此可以使用SpringCloud Config 分布式配置中心
-  
 2. 推送结果发送到消息队列后数据的持久化。
+
+
+
+## 其它
 
 
 ### redis 集群的搭建
@@ -41,7 +46,19 @@
 
 #### 启动redis命令
 
-分别执行```sudo redis-server /usr/local/redis-cluster/6001/redis.conf```从6001 ~ 6006
+1. 创建脚本 redis_cluster_start_all.sh
+
+```shell
+cd /usr/local
+redis-server /usr/local/redis-cluster/6001/redis.conf
+redis-server /usr/local/redis-cluster/6002/redis.conf
+redis-server /usr/local/redis-cluster/6003/redis.conf
+redis-server /usr/local/redis-cluster/6004/redis.conf
+redis-server /usr/local/redis-cluster/6005/redis.conf
+redis-server /usr/local/redis-cluster/6006/redis.conf
+```
+
+2. 执行启动脚本  ```sudo sh redis_cluster_start_all.sh```
 
 启动后查看进程情况如下：
 
