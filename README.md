@@ -21,7 +21,7 @@
 
 1. 启动redis集群
 2. 启动zookeeper服务、kafka服务
-3. 运行测试类 [testPush](https://github.com/suxiongwei/message-push/blob/master/src/test/java/PushTest.java)，查看日志输出观察推送效果。
+3. 运行测试类 [PushTest](https://github.com/suxiongwei/message-push/blob/master/src/test/java/PushTest.java)，查看日志输出观察推送效果。
 
 ### 待开发
 1. 队列数量的动态配置
