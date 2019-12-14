@@ -2,6 +2,7 @@ package com.sxw.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
@@ -12,6 +13,7 @@ import java.util.List;
  * 502：拦截器拦截到用户token出错
  * 555：异常抛出信息
  */
+@Slf4j
 public class ResultJson {
     // 定义jackson对象
     private static final ObjectMapper MAPPER = new ObjectMapper();
@@ -138,7 +140,7 @@ public class ResultJson {
         try {
             return MAPPER.readValue(json, ResultJson.class);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:", e);
         }
         return null;
     }
