@@ -1,5 +1,7 @@
 package com.sxw.util;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -8,35 +10,36 @@ import java.util.Date;
 /**
  * 常用工具类
  */
+@Slf4j
 public class CommonUtil {
     /**
      * 英文简写（默认）如：2010-12-01
      */
-    public static String FORMAT_SHORT = "yyyy-MM-dd";
+    public static final String FORMAT_SHORT = "yyyy-MM-dd";
     /**
      * 英文全称  如：2010-12-01 23:15:06
      */
-    public static String FORMAT_LONG = "yyyy-MM-dd HH:mm:ss";
+    public static final String FORMAT_LONG = "yyyy-MM-dd HH:mm:ss";
     /**
      * 精确到毫秒的完整时间    如：yyyy-MM-dd HH:mm:ss.S
      */
-    public static String FORMAT_FULL = "yyyy-MM-dd HH:mm:ss.S";
+    public static final String FORMAT_FULL = "yyyy-MM-dd HH:mm:ss.S";
     /**
      * 中文简写  如：2010年12月01日
      */
-    public static String FORMAT_SHORT_CN = "yyyy年MM月dd";
+    public static final String FORMAT_SHORT_CN = "yyyy年MM月dd";
     /**
      * 中文全称  如：2010年12月01日  23时15分06秒
      */
-    public static String FORMAT_LONG_CN = "yyyy年MM月dd日  HH时mm分ss秒";
+    public static final String FORMAT_LONG_CN = "yyyy年MM月dd日  HH时mm分ss秒";
     /**
      * 精确到毫秒的完整中文时间
      */
-    public static String FORMAT_FULL_CN = "yyyy年MM月dd日  HH时mm分ss秒SSS毫秒";
+    public static final String FORMAT_FULL_CN = "yyyy年MM月dd日  HH时mm分ss秒SSS毫秒";
     /**
      * 精确到毫秒的完整时间    如：yyyy-MM-dd HH:mm:ss.S
      */
-    public static String TIME = "HH:mm:ss";
+    public static final String TIME = "HH:mm:ss";
     /**
      * 将 Date 转换为字符串(2019-01-24_16:28:20)
      * @param date
@@ -62,7 +65,7 @@ public class CommonUtil {
             Date date = simpleDateFormat.parse(dateString);
             result = (int) (date.getTime() - now.getTime())/1000;
         } catch (ParseException e) {
-            e.printStackTrace();
+            log.error("error:", e);
         }
         return result;
     }

@@ -1,5 +1,6 @@
 package com.sxw.common.redis;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
@@ -14,6 +15,7 @@ import java.util.concurrent.TimeUnit;
  * 使用redisTemplate的操作实现类
  */
 @Component
+@Slf4j
 public class RedisService {
 
     @Autowired
@@ -251,7 +253,7 @@ public class RedisService {
         try {
             return redisTemplate.opsForSet().members(key);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:", e);
             return null;
         }
     }
@@ -267,7 +269,7 @@ public class RedisService {
         try {
             return redisTemplate.opsForSet().isMember(key, value);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("error:", e);
             return false;
         }
     }
