@@ -1,12 +1,8 @@
 ## 基于redis实现的消息推送服务 
 
 ### 项目背景
-
-在公司开发的一个项目中有推送的业务场景，是由我负责设计开发，在实际的使用中还没有遇到业务量大的场景，也就一直没有优化。
-存在的问题就是当遇到业务高峰时不容易实现服务器的扩容，基于quartz的分布式定时任务复杂性也较高。
-因此在看了[想不到吧？我是这样用Redis实现消息定时推送的！](https://www.cnblogs.com/linlinismine/p/9214299.html)这篇文章之后，决定自己再把推送系统重新设计。
-
-基本上实现了文章中的推送流程。
+每日一练，每天某个时间向用户推送一道题目， 
+通过调用微信、钉钉等平台的API向用户推送链接，用户通过链接打开链接进入学习页面，从而达到培训的目的。
 
 ### 运行环境
 
@@ -36,6 +32,7 @@
 ### redis 集群的搭建
 参考资源:
 
+- [想不到吧？我是这样用Redis实现消息定时推送的！](https://www.cnblogs.com/linlinismine/p/9214299.html)
 - [Redis集群官方教程](https://redis.io/topics/cluster-tutorial)
 - [深入剖析Redis - Redis集群模式搭建与原理详解](https://www.jianshu.com/p/84dbb25cc8dc)
 - [Redis常用集群方案](https://www.jianshu.com/p/1ecbd1a88924)
